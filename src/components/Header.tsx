@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosMenu } from "react-icons/io";
 import { IoSearch, IoBagOutline } from "react-icons/io5";
 import { RiUserLine } from "react-icons/ri";
 import Logo from '../assets/Logo-Essenza.png'
+import { useAuth } from "../context/AuthContext";
+
 
 export default function Header() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate()
   const [openUserMenu, setOpenUserMenu] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -71,20 +75,46 @@ export default function Header() {
               id="header-user-menu"
               className="absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white border border-gray-100 z-50 py-2"
             >
+            {!user && (
+              <>
+                <Link
+                  to="/create-user"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#00843d] hover:text-white transition"
+                  onClick={() => setOpenUserMenu(false)}
+                >
+                  Criar conta
+                </Link>
+                <Link
+                  to="/login"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#00843d] hover:text-white transition"
+                  onClick={() => setOpenUserMenu(false)}
+                >
+                  Entrar
+                </Link>
+              </>
+              )}
+
+              {user && (
+            <>
               <Link
-                to="/create-user"
+                to="/me"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#00843d] hover:text-white transition"
                 onClick={() => setOpenUserMenu(false)}
               >
-                Criar conta
+                Minha conta
               </Link>
-              <Link
-                to="/login"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#00843d] hover:text-white transition"
-                onClick={() => setOpenUserMenu(false)}
+              <button
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
+                onClick={async () => {
+                  setOpenUserMenu(false);
+                  await logout();
+                  navigate("/");
+                }}
               >
-                Entrar
-              </Link>
+                Sair
+              </button>
+            </>
+            )}
             </div>
           )}
         </div>

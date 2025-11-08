@@ -1,33 +1,43 @@
 import { useState } from "react";
-import { Link,  } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import PasswordField from "../components/PasswordField";
 
 export default function Login(){
-  const [form, setForm] = useState({ email: "", senha: "" });
-  const [errors, setErrors] = useState({ email: "", senha: "" });
- // const navigate = useNavigate();
+  const { login } = useAuth()
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     let valid = true;
-    const newErrors = { email: "", senha: "" };
-    if (!form.email) {
-      newErrors.email = "Este é um campo obrigatório.";
-      valid = false;
-    }
-    if (!form.senha) {
-      newErrors.senha = "Este é um campo obrigatório.";
-      valid = false;
-    }
+    const newErrors = { email: "", password: "" };
+    if (!form.email) { newErrors.email = "Este é um campo obrigatório."; valid = false; }
+    if (!form.password) { newErrors.password = "Este é um campo obrigatório."; valid = false; }
     setErrors(newErrors);
-    if (valid) {
-      // Chamar backend ou redirecionar
-      alert("Login realizado! (Futuro: implementar autenticação)");
-      // navigate("/area-protegida");
+    if (!valid) return;
+
+    try {
+      await login(form.email, form.password);
+      alert("Login realizado!");
+      navigate('/')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message;
+      if (status === 401) alert("Credenciais inválidas.");
+      else alert(msg || "Erro ao entrar.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -72,15 +82,16 @@ export default function Login(){
                       style={{ color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5 }}
                     >*</span>
                   </label>
-                  <input
-                    type="password"
-                    name="senha"
-                    value={form.senha}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
-                    autoComplete="current-password"
-                  />
-                  {errors.senha && <p className="text-red-600 text-xs mt-1">{errors.senha}</p>}
+                   <div className="relative">
+                      <PasswordField
+                        label=""
+                        name="password"
+                        value={form.password}
+                        onChange={handleChange}
+                        autoComplete="current-password"
+                      />
+                    </div>
+                  {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
                 </div>
               </div>
               <div className="mt-3 mb-5 text-right">

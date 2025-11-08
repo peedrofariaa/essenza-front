@@ -1,9 +1,11 @@
 import { useState } from "react";
+import api from "../utils/api";
 
 export default function ForgotPassword(){
   const [form, setForm] = useState({ email: "" });
   const [errors, setErrors] = useState({ email: "" });
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ email: e.target.value });
@@ -25,16 +27,24 @@ export default function ForgotPassword(){
       newErrors.email = "Este é um campo obrigatório.";
       valid = false;
     } else if (!validateEmail(form.email)) {
-      newErrors.email = "Por favor insira um endereço de e-mail válido (Ex: exemplo@dominio.com).";
+      newErrors.email = "Por favor insira um endereço de e-mail válido (Ex: exemplo@gmail.com).";
       valid = false;
     }
 
     setErrors(newErrors);
 
-    if (valid) {
-      // Aqui futuramente: disparar requisição para backend/SendGrid
-      setSuccess(true);
-    }
+    if (!valid) return;
+    (async () => {
+      try {
+        setLoading(true)
+        await api.post("/auth/forgot-password", { email: form.email });
+        setSuccess(true);
+      } catch {
+        setSuccess(true);
+      } finally {
+        setLoading(false)
+      }
+    })();
   }
 
   return (
@@ -65,9 +75,9 @@ export default function ForgotPassword(){
             </div>
             <button
               type="submit"
-              className="w-full py-3 bg-[#00843d] text-white text-base font-semibold rounded-[5px] hover:bg-[#007336] transition"
+              className="w-full py-3 bg-[#00843d] text-white text-base font-semibold rounded-[5px] hover:bg-[#007336] transition cursor-pointer"
             >
-              Redefinir minha senha
+              {loading ? "Enviando..." : "Redefinir senha"}
             </button>
           </form>
           {success && (
