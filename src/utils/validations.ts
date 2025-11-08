@@ -33,6 +33,9 @@ export function validateDate(dateStr: string): boolean {
   return date <= now;
 }
 
-export function validateConfirmPassword(password: string, confirmPassword: string): boolean {
+export function validateConfirmPassword(
+  password: string,
+  confirmPassword: string,
+): boolean {
   return password === confirmPassword && password.length > 0;
 }

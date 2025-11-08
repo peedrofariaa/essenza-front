@@ -51,7 +51,7 @@ export default function ResetPassword() {
       });
       alert("Senha redefinida. Faça login.");
       navigate("/login", { replace: true });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const msg = err?.response?.data?.message || "Link inválido ou expirado";
       setError(msg);
@@ -75,7 +75,11 @@ export default function ResetPassword() {
             Defina sua nova senha abaixo para acessar sua conta novamente.
           </p>
 
-          <form onSubmit={submit} autoComplete="off" className="flex flex-col gap-4">
+          <form
+            onSubmit={submit}
+            autoComplete="off"
+            className="flex flex-col gap-4"
+          >
             <div>
               <PasswordField
                 label="Nova senha"
@@ -97,8 +101,8 @@ export default function ResetPassword() {
                         strength === "weak"
                           ? "w-1/3 bg-red-500"
                           : strength === "medium"
-                          ? "w-2/3 bg-yellow-500"
-                          : "w-full bg-green-600"
+                            ? "w-2/3 bg-yellow-500"
+                            : "w-full bg-green-600"
                       }`}
                     />
                   </div>
@@ -107,15 +111,15 @@ export default function ResetPassword() {
                       strength === "weak"
                         ? "text-red-600"
                         : strength === "medium"
-                        ? "text-yellow-600"
-                        : "text-green-600"
+                          ? "text-yellow-600"
+                          : "text-green-600"
                     }`}
                   >
                     {strength === "weak"
                       ? "Senha fraca"
                       : strength === "medium"
-                      ? "Senha média"
-                      : "Senha forte"}
+                        ? "Senha média"
+                        : "Senha forte"}
                   </p>
                 </div>
               )}
@@ -129,7 +133,9 @@ export default function ResetPassword() {
               autoComplete="new-password"
             />
 
-            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+            {error && (
+              <p className="text-red-600 text-sm text-center">{error}</p>
+            )}
 
             <button
               type="submit"

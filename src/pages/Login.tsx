@@ -4,8 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PasswordField from "../components/PasswordField";
 
-export default function Login(){
-  const { login } = useAuth()
+export default function Login() {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
@@ -21,16 +21,22 @@ export default function Login(){
     if (loading) return;
     let valid = true;
     const newErrors = { email: "", password: "" };
-    if (!form.email) { newErrors.email = "Este é um campo obrigatório."; valid = false; }
-    if (!form.password) { newErrors.password = "Este é um campo obrigatório."; valid = false; }
+    if (!form.email) {
+      newErrors.email = "Este é um campo obrigatório.";
+      valid = false;
+    }
+    if (!form.password) {
+      newErrors.password = "Este é um campo obrigatório.";
+      valid = false;
+    }
     setErrors(newErrors);
     if (!valid) return;
 
     try {
       await login(form.email, form.password);
       alert("Login realizado!");
-      navigate('/')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const status = err?.response?.status;
       const msg = err?.response?.data?.message;
@@ -44,7 +50,10 @@ export default function Login(){
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f6f3f8] py-12">
       <div className="w-full max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8 text-center tracking-widest" style={{ color: "#00843d" }}>
+        <h2
+          className="text-2xl font-bold mb-8 text-center tracking-widest"
+          style={{ color: "#00843d" }}
+        >
           ENTRE OU CADASTRE-SE
         </h2>
         <div className="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row gap-8">
@@ -62,8 +71,15 @@ export default function Login(){
                   <label className="block mb-1 text-sm text-gray-700">
                     E-mail
                     <span
-                      style={{ color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5 }}
-                    >*</span>
+                      style={{
+                        color: "rgb(224, 43, 39)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     type="email"
@@ -73,25 +89,38 @@ export default function Login(){
                     className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
                     autoComplete="email"
                   />
-                  {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-700">
                     Senha
                     <span
-                      style={{ color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5 }}
-                    >*</span>
+                      style={{
+                        color: "rgb(224, 43, 39)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
                   </label>
-                   <div className="relative">
-                      <PasswordField
-                        label=""
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        autoComplete="current-password"
-                      />
-                    </div>
-                  {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
+                  <div className="relative">
+                    <PasswordField
+                      label=""
+                      name="password"
+                      value={form.password}
+                      onChange={handleChange}
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  {errors.password && (
+                    <p className="text-red-600 text-xs mt-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="mt-3 mb-5 text-right">
@@ -120,7 +149,9 @@ export default function Login(){
             <button
               className="cursor-pointer mt-4 w-full py-3 bg-[#00843d] text-white text-base font-semibold rounded-[5px] hover:bg-[#007336] transition"
               type="button"
-              onClick={() => { window.location.href = "/create-user"; }}
+              onClick={() => {
+                window.location.href = "/create-user";
+              }}
             >
               Criar conta
             </button>
@@ -128,5 +159,5 @@ export default function Login(){
         </div>
       </div>
     </div>
-  )
+  );
 }

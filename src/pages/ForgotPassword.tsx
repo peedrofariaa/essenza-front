@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../utils/api";
 
-export default function ForgotPassword(){
+export default function ForgotPassword() {
   const [form, setForm] = useState({ email: "" });
   const [errors, setErrors] = useState({ email: "" });
   const [success, setSuccess] = useState(false);
@@ -27,7 +27,8 @@ export default function ForgotPassword(){
       newErrors.email = "Este é um campo obrigatório.";
       valid = false;
     } else if (!validateEmail(form.email)) {
-      newErrors.email = "Por favor insira um endereço de e-mail válido (Ex: exemplo@gmail.com).";
+      newErrors.email =
+        "Por favor insira um endereço de e-mail válido (Ex: exemplo@gmail.com).";
       valid = false;
     }
 
@@ -36,13 +37,13 @@ export default function ForgotPassword(){
     if (!valid) return;
     (async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         await api.post("/auth/forgot-password", { email: form.email });
         setSuccess(true);
       } catch {
         setSuccess(true);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     })();
   }
@@ -50,18 +51,35 @@ export default function ForgotPassword(){
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f6f3f8] py-12">
       <div className="w-full max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-8 text-center tracking-widest" style={{ color: "#00843d" }}>
+        <h2
+          className="text-2xl font-bold mb-8 text-center tracking-widest"
+          style={{ color: "#00843d" }}
+        >
           ESQUECEU SUA SENHA?
         </h2>
         <div className="bg-white rounded-xl shadow p-8 flex flex-col gap-6">
           <p className="text-center text-gray-700 mb-2">
-            Por favor, digite seu endereço de e-mail abaixo para receber o link para redefinição de senha.
+            Por favor, digite seu endereço de e-mail abaixo para receber o link
+            para redefinição de senha.
           </p>
-          <form onSubmit={handleSubmit} autoComplete="off" className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit}
+            autoComplete="off"
+            className="flex flex-col gap-4"
+          >
             <div>
               <label className="block mb-1 text-sm text-gray-700">
                 E-mail
-                <span style={{ color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5 }}>*</span>
+                <span
+                  style={{
+                    color: "rgb(224, 43, 39)",
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    marginLeft: 5,
+                  }}
+                >
+                  *
+                </span>
               </label>
               <input
                 type="email"
@@ -71,7 +89,9 @@ export default function ForgotPassword(){
                 className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
                 autoComplete="email"
               />
-              {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+              )}
             </div>
             <button
               type="submit"
@@ -82,7 +102,8 @@ export default function ForgotPassword(){
           </form>
           {success && (
             <p className="text-green-600 text-sm text-center mt-2">
-              Se o e-mail estiver cadastrado, você receberá as instruções de redefinição em instantes.
+              Se o e-mail estiver cadastrado, você receberá as instruções de
+              redefinição em instantes.
             </p>
           )}
         </div>

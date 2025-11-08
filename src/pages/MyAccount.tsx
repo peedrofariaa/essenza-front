@@ -12,7 +12,7 @@ function formatDateBR(iso: string) {
 
 export default function MyAccount() {
   const { user, setUser } = useAuth();
-  const [ editing, setEditing ] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -51,7 +51,9 @@ export default function MyAccount() {
       criadoEm: user.criadoEm,
     });
     setEditing(false);
-    alert("Dados atualizados (simulação). Em breve, integrar com endpoint de update.");
+    alert(
+      "Dados atualizados (simulação). Em breve, integrar com endpoint de update.",
+    );
   }
 
   if (!user) {
@@ -64,63 +66,102 @@ export default function MyAccount() {
   }
 
   return (
-   <div className="max-w-3xl mx-auto p-6">
-    <h2 className="text-xl font-semibold mb-6">Meus dados</h2>
+    <div className="max-w-3xl mx-auto p-6">
+      <h2 className="text-xl font-semibold mb-6">Meus dados</h2>
 
-  {!editing && (
-    <div className="space-y-3">
-      <div>
-        <span className="font-medium">E-mail:</span> {user?.email}
-      </div>
-      <div>
-        <span className="font-medium">Nome:</span> {user?.name}
-      </div>
-      <div>
-        <span className="font-medium">CPF:</span> {user?.cpf}
-      </div>
-      <div>
-        <span className="font-medium">Data de nascimento:</span> {formatDateBR(user.birth)}
-      </div>
+      {!editing && (
+        <div className="space-y-3">
+          <div>
+            <span className="font-medium">E-mail:</span> {user?.email}
+          </div>
+          <div>
+            <span className="font-medium">Nome:</span> {user?.name}
+          </div>
+          <div>
+            <span className="font-medium">CPF:</span> {user?.cpf}
+          </div>
+          <div>
+            <span className="font-medium">Data de nascimento:</span>{" "}
+            {formatDateBR(user.birth)}
+          </div>
 
-      <div className="mt-6 flex gap-3">
-        <button onClick={() => setEditing(true)} className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer">
-          Editar
-        </button>
-        <button
-          onClick={() => alert("Fluxo de mudança de senha em breve.")}
-          className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer"
-        >
-          Mudar senha
-        </button>
-      </div>
-    </div>
-  )}
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={() => setEditing(true)}
+              className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer"
+            >
+              Editar
+            </button>
+            <button
+              onClick={() => alert("Fluxo de mudança de senha em breve.")}
+              className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer"
+            >
+              Mudar senha
+            </button>
+          </div>
+        </div>
+      )}
 
-  {editing && (
-    <form onSubmit={handleSalvar} className="space-y-4">
-      <div>
-        <label className="block text-sm mb-1">E-mail</label>
-        <input name="email" type="email" value={form.email} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-      </div>
-      <div>
-        <label className="block text-sm mb-1">Nome</label>
-        <input name="name" type="text" value={form.name} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-      </div>
-      <div>
-        <label className="block text-sm mb-1">CPF</label>
-        <input name="cpf" type="text" value={form.cpf} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-      </div>
-      <div>
-        <label className="block text-sm mb-1">Data de nascimento</label>
-        <input name="birth" type="date" value={form.birth} onChange={handleChange} className="w-full border rounded px-3 py-2" />
-      </div>
+      {editing && (
+        <form onSubmit={handleSalvar} className="space-y-4">
+          <div>
+            <label className="block text-sm mb-1">E-mail</label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm mb-1">Nome</label>
+            <input
+              name="name"
+              type="text"
+              value={form.name}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm mb-1">CPF</label>
+            <input
+              name="cpf"
+              type="text"
+              value={form.cpf}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm mb-1">Data de nascimento</label>
+            <input
+              name="birth"
+              type="date"
+              value={form.birth}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
 
-      <div className="flex gap-3">
-        <button type="submit" className="py-2 px-4 rounded bg-[#00843d] text-white hover:bg-[#007336]">Salvar</button>
-        <button type="button" onClick={() => setEditing(false)} className="py-2 px-4 rounded border border-gray-300 hover:bg-gray-50">Cancelar</button>
-      </div>
-    </form>
-  )}
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              className="py-2 px-4 rounded bg-[#00843d] text-white hover:bg-[#007336]"
+            >
+              Salvar
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="py-2 px-4 rounded border border-gray-300 hover:bg-gray-50"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

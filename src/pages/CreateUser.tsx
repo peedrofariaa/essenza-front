@@ -1,14 +1,19 @@
-import { useState } from "react"
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { validateConfirmPassword, validateCPF, validateDate, validateEmail } from "../utils/validations";
+import {
+  validateConfirmPassword,
+  validateCPF,
+  validateDate,
+  validateEmail,
+} from "../utils/validations";
 import PasswordField from "../components/PasswordField";
 
 type Strength = "weak" | "medium" | "strong" | "";
 
-export default function CreateUser(){
+export default function CreateUser() {
   const [strength, setStrength] = useState<Strength>("");
-  const { signup } = useAuth()
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   function calcStrength(pw: string): Strength {
@@ -23,7 +28,7 @@ export default function CreateUser(){
     if (score >= 3) return "medium";
     return "weak";
   }
-  
+
   const [form, setForm] = useState({
     name: "",
     cpf: "",
@@ -31,22 +36,26 @@ export default function CreateUser(){
     email: "",
     password: "",
     confirmPassword: "",
-  })
+  });
 
   const [errors, setErrors] = useState({
-    name: "", cpf: "", birth: "",
-    email: "", password: "", confirmPassword: ""
+    name: "",
+    cpf: "",
+    birth: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   function maskCPF(value: string): string {
-  return value
-    .replace(/\D/g, "") 
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d)/, "$1.$2")
-    .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
-    .substring(0, 14);
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+      .substring(0, 14);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -62,7 +71,14 @@ export default function CreateUser(){
     e.preventDefault();
     if (loading) return;
     let valid = true;
-    const newErrors = { name: "", cpf: "", birth: "", email: "", password: "", confirmPassword: "" };
+    const newErrors = {
+      name: "",
+      cpf: "",
+      birth: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    };
 
     if (!form.name) {
       newErrors.name = "Este é um campo obrigatório.";
@@ -86,7 +102,8 @@ export default function CreateUser(){
       newErrors.email = "Este é um campo obrigatório";
       valid = false;
     } else if (!validateEmail(form.email)) {
-      newErrors.email = "Por favor insira um endereço de e-mail válido (Ex: exemplo@dominio.com).";
+      newErrors.email =
+        "Por favor insira um endereço de e-mail válido (Ex: exemplo@dominio.com).";
       valid = false;
     }
     if (!form.password) {
@@ -115,10 +132,17 @@ export default function CreateUser(){
       });
 
       alert("Cadastro realizado com sucesso!");
-      setForm({ name: "", cpf: "", birth: "", email: "", password: "", confirmPassword: "" });
-      navigate('/')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any){
+      setForm({
+        name: "",
+        cpf: "",
+        birth: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       const status = err?.response?.status;
       const msg = err?.response?.data?.message;
       if (status === 409) alert(msg || "Email ou CPF já cadastrado.");
@@ -132,21 +156,33 @@ export default function CreateUser(){
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f6f3f8] py-12">
       <div className="w-full max-w-3xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8 text-center tracking-widest" style={{ color: "#00843d" }}>
+        <h2
+          className="text-2xl font-bold mb-8 text-center tracking-widest"
+          style={{ color: "#00843d" }}
+        >
           CRIAR CONTA
         </h2>
         <div className="bg-white rounded-xl shadow p-8 flex flex-col md:flex-row gap-8">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Informações Pessoais</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
+              Informações Pessoais
+            </h3>
             <div className="flex flex-col gap-4">
               <div>
                 <label className="block mb-1 text-sm text-gray-700">
-                    Nome completo
-                    <span style={{
-                      color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                  Nome completo
+                  <span
+                    style={{
+                      color: "rgb(224, 43, 39)",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      marginLeft: 5,
+                    }}
+                  >
+                    *
+                  </span>
                 </label>
-                <input  
+                <input
                   type="text"
                   name="name"
                   value={form.name}
@@ -154,14 +190,23 @@ export default function CreateUser(){
                   className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
                   autoComplete="name"
                 />
-                {errors.name && <p className="text-red-600 text-xs mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-red-600 text-xs mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <label className="block mb-1 text-sm text-gray-700">
-                    CPF
-                    <span style={{
-                      color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                  CPF
+                  <span
+                    style={{
+                      color: "rgb(224, 43, 39)",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      marginLeft: 5,
+                    }}
+                  >
+                    *
+                  </span>
                 </label>
                 <input
                   type="text"
@@ -172,14 +217,23 @@ export default function CreateUser(){
                   autoComplete="off"
                   maxLength={14}
                 />
-                {errors.cpf && <p className="text-red-600 text-xs mt-1">{errors.cpf}</p>}
+                {errors.cpf && (
+                  <p className="text-red-600 text-xs mt-1">{errors.cpf}</p>
+                )}
               </div>
               <div>
                 <label className="block mb-1 text-sm text-gray-700">
-                    Data de nascimento
-                    <span style={{
-                      color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                  Data de nascimento
+                  <span
+                    style={{
+                      color: "rgb(224, 43, 39)",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      marginLeft: 5,
+                    }}
+                  >
+                    *
+                  </span>
                 </label>
                 <input
                   type="date"
@@ -189,7 +243,9 @@ export default function CreateUser(){
                   className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
                   autoComplete="bday"
                 />
-                {errors.birth && <p className="text-red-600 text-xs mt-1">{errors.birth}</p>}
+                {errors.birth && (
+                  <p className="text-red-600 text-xs mt-1">{errors.birth}</p>
+                )}
               </div>
             </div>
           </div>
@@ -199,14 +255,23 @@ export default function CreateUser(){
             autoComplete="off"
           >
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Informações de acesso</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Informações de acesso
+              </h3>
               <div className="flex flex-col gap-4">
                 <div>
                   <label className="block mb-1 text-sm text-gray-700">
                     E-mail
-                    <span style={{
-                      color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                    <span
+                      style={{
+                        color: "rgb(224, 43, 39)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
                   </label>
                   <input
                     type="email"
@@ -216,14 +281,23 @@ export default function CreateUser(){
                     className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
                     autoComplete="email"
                   />
-                  {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-700">
                     Senha
-                    <span style={{
-                    color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                    <span
+                      style={{
+                        color: "rgb(224, 43, 39)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
                   </label>
                   <PasswordField
                     label=""
@@ -245,8 +319,8 @@ export default function CreateUser(){
                             strength === "weak"
                               ? "w-1/3 bg-red-500"
                               : strength === "medium"
-                              ? "w-2/3 bg-yellow-500"
-                              : "w-full bg-green-600"
+                                ? "w-2/3 bg-yellow-500"
+                                : "w-full bg-green-600"
                           }`}
                         />
                       </div>
@@ -255,26 +329,37 @@ export default function CreateUser(){
                           strength === "weak"
                             ? "text-red-600"
                             : strength === "medium"
-                            ? "text-yellow-600"
-                            : "text-green-600"
+                              ? "text-yellow-600"
+                              : "text-green-600"
                         }`}
                       >
                         {strength === "weak"
                           ? "Senha fraca"
                           : strength === "medium"
-                          ? "Senha média"
-                          : "Senha forte"}
+                            ? "Senha média"
+                            : "Senha forte"}
                       </p>
                     </div>
                   )}
-                  {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
+                  {errors.password && (
+                    <p className="text-red-600 text-xs mt-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-700">
                     Confirmar senha
-                    <span style={{
-                    color: "rgb(224, 43, 39)", fontSize: "12px", fontWeight: 400, marginLeft: 5,
-                    }}>*</span>
+                    <span
+                      style={{
+                        color: "rgb(224, 43, 39)",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
                   </label>
                   <PasswordField
                     label=""
@@ -286,7 +371,11 @@ export default function CreateUser(){
                     }}
                     autoComplete="new-password"
                   />
-                  {errors.confirmPassword && <p className="text-red-600 text-xs mt-1">{errors.confirmPassword}</p>}
+                  {errors.confirmPassword && (
+                    <p className="text-red-600 text-xs mt-1">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
