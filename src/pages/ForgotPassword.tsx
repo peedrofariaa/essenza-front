@@ -1,64 +1,64 @@
-import { useState } from "react";
-import api from "../utils/api";
+import { useState } from 'react'
+import api from '../utils/api'
 
 export default function ForgotPassword() {
-  const [form, setForm] = useState({ email: "" });
-  const [errors, setErrors] = useState({ email: "" });
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ email: '' })
+  const [errors, setErrors] = useState({ email: '' })
+  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm({ email: e.target.value });
-    setErrors({ email: "" });
-    setSuccess(false);
+    setForm({ email: e.target.value })
+    setErrors({ email: '' })
+    setSuccess(false)
   }
 
   function validateEmail(email: string) {
-    const re = /^[\w.-]+@[\w.-]+\.\w+$/;
-    return re.test(email);
+    const re = /^[\w.-]+@[\w.-]+\.\w+$/
+    return re.test(email)
   }
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    let valid = true;
-    const newErrors = { email: "" };
+    e.preventDefault()
+    let valid = true
+    const newErrors = { email: '' }
 
     if (!form.email) {
-      newErrors.email = "Este é um campo obrigatório.";
-      valid = false;
+      newErrors.email = 'Este é um campo obrigatório.'
+      valid = false
     } else if (!validateEmail(form.email)) {
       newErrors.email =
-        "Por favor insira um endereço de e-mail válido (Ex: exemplo@gmail.com).";
-      valid = false;
+        'Por favor insira um endereço de e-mail válido (Ex: exemplo@gmail.com).'
+      valid = false
     }
 
-    setErrors(newErrors);
+    setErrors(newErrors)
 
-    if (!valid) return;
-    (async () => {
+    if (!valid) return
+    ;(async () => {
       try {
-        setLoading(true);
-        await api.post("/auth/forgot-password", { email: form.email });
-        setSuccess(true);
+        setLoading(true)
+        await api.post('/auth/forgot-password', { email: form.email })
+        setSuccess(true)
       } catch {
-        setSuccess(true);
+        setSuccess(true)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    })();
+    })()
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f6f3f8] py-12">
-      <div className="w-full max-w-md mx-auto">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12">
+      <div className="mx-auto w-full max-w-md">
         <h2
-          className="text-2xl font-bold mb-8 text-center tracking-widest"
-          style={{ color: "#00843d" }}
+          className="mb-8 text-center text-2xl font-bold tracking-widest"
+          style={{ color: '#00843d' }}
         >
           ESQUECEU SUA SENHA?
         </h2>
-        <div className="bg-white rounded-xl shadow p-8 flex flex-col gap-6">
-          <p className="text-center text-gray-700 mb-2">
+        <div className="flex flex-col gap-6 rounded-xl bg-white p-8 shadow">
+          <p className="mb-2 text-center text-gray-700">
             Por favor, digite seu endereço de e-mail abaixo para receber o link
             para redefinição de senha.
           </p>
@@ -68,12 +68,12 @@ export default function ForgotPassword() {
             className="flex flex-col gap-4"
           >
             <div>
-              <label className="block mb-1 text-sm text-gray-700">
+              <label className="mb-1 block text-sm text-gray-700">
                 E-mail
                 <span
                   style={{
-                    color: "rgb(224, 43, 39)",
-                    fontSize: "12px",
+                    color: 'rgb(224, 43, 39)',
+                    fontSize: '12px',
                     fontWeight: 400,
                     marginLeft: 5,
                   }}
@@ -86,22 +86,22 @@ export default function ForgotPassword() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full border border-gray-200 rounded-[5px] py-2 px-3 bg-gray-50 focus:border-[#00843d] outline-none"
+                className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
                 autoComplete="email"
               />
               {errors.email && (
-                <p className="text-red-600 text-xs mt-1">{errors.email}</p>
+                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
               )}
             </div>
             <button
               type="submit"
-              className="w-full py-3 bg-[#00843d] text-white text-base font-semibold rounded-[5px] hover:bg-[#007336] transition cursor-pointer"
+              className="w-full cursor-pointer rounded-[5px] bg-[#00843d] py-3 text-base font-semibold text-white transition hover:bg-[#007336]"
             >
-              {loading ? "Enviando..." : "Redefinir senha"}
+              {loading ? 'Enviando...' : 'Redefinir senha'}
             </button>
           </form>
           {success && (
-            <p className="text-green-600 text-sm text-center mt-2">
+            <p className="mt-2 text-center text-sm text-green-600">
               Se o e-mail estiver cadastrado, você receberá as instruções de
               redefinição em instantes.
             </p>
@@ -109,5 +109,5 @@ export default function ForgotPassword() {
         </div>
       </div>
     </div>
-  );
+  )
 }

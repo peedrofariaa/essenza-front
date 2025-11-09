@@ -1,44 +1,44 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 type Props = {
-  label: string;
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  autoComplete?: string;
-  required?: boolean;
-};
+  label: string
+  name: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  autoComplete?: string
+  required?: boolean
+}
 
 export default function PasswordField({
   label,
   name,
   value,
   onChange,
-  autoComplete = "new-password",
+  autoComplete = 'new-password',
   required = true,
 }: Props) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   return (
     <div>
       {label && (
-        <label className="block mb-1 text-sm text-gray-700">{label}</label>
+        <label className="mb-1 block text-sm text-gray-700">{label}</label>
       )}
       <div className="relative">
         <input
-          type={show ? "text" : "password"}
+          type={show ? 'text' : 'password'}
           name={name}
           value={value}
           onChange={onChange}
-          className="w-full border border-gray-200 rounded-[5px] py-2 px-3 pr-10 bg-gray-50 focus:border-[#00843d] outline-none"
+          className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 pr-10 outline-none focus:border-[#00843d]"
           autoComplete={autoComplete}
           required={required}
         />
         <button
           type="button"
           onClick={() => setShow((s) => !s)}
-          aria-label={show ? "Ocultar senha" : "Mostrar senha"}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+          className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
         >
           {show ? (
             <svg
@@ -80,5 +80,5 @@ export default function PasswordField({
         </button>
       </div>
     </div>
-  );
+  )
 }

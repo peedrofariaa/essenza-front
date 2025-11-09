@@ -1,7 +1,7 @@
 export default function TopBar() {
   return (
-    <div className="bg-[#00843d] text-white h-8 flex items-center pl-4 font-bold tracking-widest text-xs">
+    <div className="flex h-8 items-center bg-[#00843d] pl-4 text-xs font-bold tracking-widest text-white">
       ESSENZA
     </div>
-  );
+  )
 }

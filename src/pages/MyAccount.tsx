@@ -1,46 +1,46 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 function formatDateBR(iso: string) {
   try {
-    const d = new Date(iso);
-    return d.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    const d = new Date(iso)
+    return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
   } catch {
-    return iso;
+    return iso
   }
 }
 
 export default function MyAccount() {
-  const { user, setUser } = useAuth();
-  const [editing, setEditing] = useState(false);
+  const { user, setUser } = useAuth()
+  const [editing, setEditing] = useState(false)
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    cpf: "",
-    birth: "",
-  });
+    name: '',
+    email: '',
+    cpf: '',
+    birth: '',
+  })
 
   useEffect(() => {
     if (user) {
       setForm({
-        name: user.name ?? "",
-        email: user.email ?? "",
-        cpf: user.cpf ?? "",
-        birth: user.birth ? user.birth.slice(0, 10) : "",
-      });
+        name: user.name ?? '',
+        email: user.email ?? '',
+        cpf: user.cpf ?? '',
+        birth: user.birth ? user.birth.slice(0, 10) : '',
+      })
     }
-  }, [user]);
+  }, [user])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
   }
 
   async function handleSalvar(e: React.FormEvent) {
-    e.preventDefault();
-    if (!user) return;
-    const birthISO = new Date(`${form.birth}T00:00:00`).toISOString();
+    e.preventDefault()
+    if (!user) return
+    const birthISO = new Date(`${form.birth}T00:00:00`).toISOString()
 
     setUser({
       id: user.id,
@@ -49,25 +49,25 @@ export default function MyAccount() {
       cpf: form.cpf,
       birth: birthISO,
       criadoEm: user.criadoEm,
-    });
-    setEditing(false);
+    })
+    setEditing(false)
     alert(
-      "Dados atualizados (simulação). Em breve, integrar com endpoint de update.",
-    );
+      'Dados atualizados (simulação). Em breve, integrar com endpoint de update.',
+    )
   }
 
   if (!user) {
     return (
-      <div className="max-w-3xl mx-auto p-6">
-        <h2 className="text-xl font-semibold mb-4">Minha conta</h2>
+      <div className="mx-auto max-w-3xl p-6">
+        <h2 className="mb-4 text-xl font-semibold">Minha conta</h2>
         <p>É necessário entrar para acessar esta página.</p>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-xl font-semibold mb-6">Meus dados</h2>
+    <div className="mx-auto max-w-3xl p-6">
+      <h2 className="mb-6 text-xl font-semibold">Meus dados</h2>
 
       {!editing && (
         <div className="space-y-3">
@@ -81,20 +81,20 @@ export default function MyAccount() {
             <span className="font-medium">CPF:</span> {user?.cpf}
           </div>
           <div>
-            <span className="font-medium">Data de nascimento:</span>{" "}
+            <span className="font-medium">Data de nascimento:</span>{' '}
             {formatDateBR(user.birth)}
           </div>
 
           <div className="mt-6 flex gap-3">
             <button
               onClick={() => setEditing(true)}
-              className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer"
+              className="cursor-pointer rounded border border-black px-4 py-2 text-[#007336] hover:bg-[#007336] hover:text-white"
             >
               Editar
             </button>
             <button
-              onClick={() => alert("Fluxo de mudança de senha em breve.")}
-              className="py-2 px-4 rounded border border-black text-[#007336] hover:bg-[#007336] hover:text-white cursor-pointer"
+              onClick={() => alert('Fluxo de mudança de senha em breve.')}
+              className="cursor-pointer rounded border border-black px-4 py-2 text-[#007336] hover:bg-[#007336] hover:text-white"
             >
               Mudar senha
             </button>
@@ -105,57 +105,57 @@ export default function MyAccount() {
       {editing && (
         <form onSubmit={handleSalvar} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1">E-mail</label>
+            <label className="mb-1 block text-sm">E-mail</label>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full rounded border px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm mb-1">Nome</label>
+            <label className="mb-1 block text-sm">Nome</label>
             <input
               name="name"
               type="text"
               value={form.name}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full rounded border px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm mb-1">CPF</label>
+            <label className="mb-1 block text-sm">CPF</label>
             <input
               name="cpf"
               type="text"
               value={form.cpf}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full rounded border px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm mb-1">Data de nascimento</label>
+            <label className="mb-1 block text-sm">Data de nascimento</label>
             <input
               name="birth"
               type="date"
               value={form.birth}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full rounded border px-3 py-2"
             />
           </div>
 
           <div className="flex gap-3">
             <button
               type="submit"
-              className="py-2 px-4 rounded bg-[#00843d] text-white hover:bg-[#007336]"
+              className="rounded bg-[#00843d] px-4 py-2 text-white hover:bg-[#007336]"
             >
               Salvar
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="py-2 px-4 rounded border border-gray-300 hover:bg-gray-50"
+              className="rounded border border-gray-300 px-4 py-2 hover:bg-gray-50"
             >
               Cancelar
             </button>
@@ -163,5 +163,5 @@ export default function MyAccount() {
         </form>
       )}
     </div>
-  );
+  )
 }
