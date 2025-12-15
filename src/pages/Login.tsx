@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import PasswordField from '../components/PasswordField'
@@ -7,6 +8,7 @@ import PasswordField from '../components/PasswordField'
 export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [form, setForm] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
@@ -32,11 +34,12 @@ export default function Login() {
     setErrors(newErrors)
     if (!valid) return
 
+    setLoading(true)
     try {
       await login(form.email, form.password)
       alert('Login realizado!')
-      navigate('/')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const from = (location.state as any)?.from || '/'
+      navigate(from)
     } catch (err: any) {
       const status = err?.response?.status
       const msg = err?.response?.data?.message
@@ -48,7 +51,7 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12">
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12 pt-36">
       <div className="mx-auto w-full max-w-3xl">
         <h2
           className="mb-8 text-center text-2xl font-bold tracking-widest"
@@ -136,7 +139,7 @@ export default function Login() {
               type="submit"
               className="w-full cursor-pointer rounded-[5px] bg-[#00843d] py-3 text-base font-semibold text-white transition hover:bg-[#007336]"
             >
-              Entrar
+              {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </form>
 

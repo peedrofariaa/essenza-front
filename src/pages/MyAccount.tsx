@@ -66,9 +66,8 @@ export default function MyAccount() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="mx-auto max-w-3xl py-24 pt-36">
       <h2 className="mb-6 text-xl font-semibold">Meus dados</h2>
-
       {!editing && (
         <div className="space-y-3">
           <div>

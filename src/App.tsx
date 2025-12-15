@@ -7,6 +7,13 @@ import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import MyAccount from './pages/MyAccount'
 import ResetPassword from './pages/ResetPassword'
+import Footer from './components/Footer'
+import Category from './pages/Category'
+import Product from './pages/Product'
+import Checkout from './pages/Checkout'
+import OrderSuccess from './pages/OrderSuccess'
+import OrderPending from './pages/OrderPending'
+import OrderFailure from './pages/OrderFailure'
 
 function App() {
   return (
@@ -20,7 +27,14 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/me" element={<MyAccount />} />
+        <Route path="/categoria/:slug" element={<Category />} />
+        <Route path="/produto/:slug" element={<Product />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/pedido/sucesso" element={<OrderSuccess />} />
+        <Route path="/pedido/pendente" element={<OrderPending />} />
+        <Route path="/pedido/falha" element={<OrderFailure />} />
       </Routes>
+      <Footer />
     </>
   )
 }
