@@ -77,6 +77,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                   >
                     {item.name}
                   </Link>
+                  {item.variantLabel && (
+                    <p className="text-sm text-gray-600">{item.variantLabel}</p>
+                  )}
                   <p className="text-sm text-gray-600">
                     {(item.price_in_cents / 100).toLocaleString('pt-BR', {
                       style: 'currency',

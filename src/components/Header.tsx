@@ -8,11 +8,26 @@ import { useCart } from '../context/CartContext'
 import CartSidebar from './CartSidebar'
 
 const CATEGORIES = [
-  { label: 'Velas Aromáticas', slug: 'velas' },
+  {
+    label: 'Velas',
+    slug: 'velas',
+    sub: [
+      { label: 'Velas Aromáticas', slug: 'velas?tipo=aromaticas' },
+      { label: 'Velas de Massagem', slug: 'velas?tipo=massagem' },
+    ],
+  },
   { label: 'Corpo & Banho', slug: 'corpo' },
   { label: 'Decoração', slug: 'decoracao' },
   { label: 'Aromatizadores', slug: 'aromatizadores' },
 ]
+
+type SearchProduct = {
+  id: string
+  name: string
+  slug: string
+  price_in_cents: number
+  images?: { url: string }[]
+}
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -25,6 +40,13 @@ export default function Header() {
   const [cartOpen, setCartOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const [hoveredCat, setHoveredCat] = useState<string | null>(null)
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<SearchProduct[]>([])
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -47,6 +69,12 @@ export default function Header() {
       ) {
         setOpenCatMenu(false)
       }
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowSearchResults(false)
+      }
     }
     if (openUserMenu || openCatMenu) {
       document.addEventListener('mousedown', handleClickOutside)
@@ -54,7 +82,54 @@ export default function Header() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [openUserMenu, openCatMenu])
+  }, [openUserMenu, openCatMenu, showSearchResults])
+
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
+    }
+
+    setSearchLoading(true)
+    const timer = setTimeout(() => {
+      fetch(
+        `${import.meta.env.VITE_API_URL}/products?search=${encodeURIComponent(searchQuery.trim())}`,
+      )
+        .then((r) => r.json())
+        .then((json) => {
+          const products = json.data || json || []
+          setSearchResults(products.slice(0, 6))
+          setShowSearchResults(true)
+        })
+        .catch(() => setSearchResults([]))
+        .finally(() => setSearchLoading(false))
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const openSub = (slug: string) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current)
+    setHoveredCat(slug)
+  }
+
+  const closeSub = () => {
+    hoverTimer.current = setTimeout(() => setHoveredCat(null), 150)
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      setShowSearchResults(false)
+      setSearchQuery('')
+    }
+  }
+
+  const handleSearchResultClick = () => {
+    setShowSearchResults(false)
+    setSearchQuery('')
+  }
 
   const activeBg = scrolled || hovered
 
@@ -88,31 +163,118 @@ export default function Header() {
                   className="absolute top-14 left-0 z-50 mt-2 w-56 rounded-lg border border-gray-100 bg-white py-2 shadow-lg"
                 >
                   {CATEGORIES.map((c) => (
-                    <Link
+                    <div
                       key={c.slug}
-                      to={`/categoria/${c.slug}`}
-                      role="menuitem"
-                      className="block px-4 py-2 text-sm text-gray-700 transition hover:bg-[#00843d] hover:text-white"
-                      onClick={() => setOpenCatMenu(false)}
+                      className="relative"
+                      onMouseEnter={() =>
+                        c.sub ? openSub(c.slug) : closeSub()
+                      }
+                      onMouseLeave={closeSub}
                     >
-                      {c.label}
-                    </Link>
+                      <div className="flex items-center justify-between">
+                        <Link
+                          to={`/categoria/${c.slug}`}
+                          role="menuitem"
+                          className="flex-1 px-4 py-2 text-sm text-gray-700 transition hover:bg-[#00843d] hover:text-white"
+                          onClick={() => setOpenCatMenu(false)}
+                        >
+                          {c.label}
+                        </Link>
+                      </div>
+
+                      {c.sub && hoveredCat === c.slug && (
+                        <div
+                          className="absolute top-0 left-full z-50 ml-1 w-52 rounded-lg border border-gray-100 bg-white py-2 shadow-lg"
+                          onMouseEnter={() => openSub(c.slug)}
+                          onMouseLeave={closeSub}
+                        >
+                          {c.sub.map((s) => (
+                            <Link
+                              key={s.slug}
+                              to={`/categoria/${s.slug}`}
+                              role="menuitem"
+                              className="block px-4 py-2 text-sm text-gray-700 transition hover:bg-[#00843d] hover:text-white"
+                              onClick={() => setOpenCatMenu(false)}
+                            >
+                              {s.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </nav>
               )}
             </div>
 
-            <form
-              role="search"
-              className="hidden h-12 w-full max-w-xs items-center rounded-[5px] border border-black/10 bg-gray-50 px-3 py-1 md:flex"
+            <div
+              ref={searchRef}
+              className="relative hidden w-full max-w-xs md:block"
             >
-              <IoSearch className="mr-2 text-lg text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar produtos..."
-                className="flex-1 border-none bg-transparent text-sm outline-none"
-              />
-            </form>
+              <form
+                onSubmit={handleSearch}
+                role="search"
+                className="flex h-12 w-full items-center rounded-[5px] border border-black/10 bg-gray-50 px-3 py-1"
+              >
+                <IoSearch className="mr-2 text-lg text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar produtos..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 border-none bg-transparent text-sm outline-none"
+                />
+              </form>
+
+              {showSearchResults && (
+                <div className="absolute top-14 left-0 z-50 mt-2 w-full max-w-md rounded-lg border border-gray-100 bg-white shadow-xl">
+                  {searchLoading ? (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      Buscando...
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      Nenhum produto encontrado
+                    </div>
+                  ) : (
+                    <div className="py-2">
+                      {searchResults.map((product) => (
+                        <Link
+                          key={product.id}
+                          to={`/produto/${product.slug}`}
+                          onClick={handleSearchResultClick}
+                          className="flex items-center gap-3 px-4 py-3 transition hover:bg-gray-50"
+                        >
+                          {product.images?.[0]?.url ? (
+                            <img
+                              src={product.images[0].url}
+                              alt={product.name}
+                              className="h-12 w-12 rounded object-cover"
+                            />
+                          ) : (
+                            <div className="h-12 w-12 rounded bg-gray-100" />
+                          )}
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">
+                              {product.name}
+                            </p>
+                            <p className="text-sm font-semibold text-[#00843d]">
+                              {(product.price_in_cents / 100).toLocaleString(
+                                'pt-BR',
+                                {
+                                  style: 'currency',
+                                  currency: 'BRL',
+                                },
+                              )}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-1 justify-center">

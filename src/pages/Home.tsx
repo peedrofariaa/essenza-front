@@ -1,22 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
-import Hero from '../components/Hero'
-import HeroNatal from '../assets/hero-natal.jpg'
+import HeroCarousel, { type Slide } from '../components/HeroCarousel'
+import EssenzaHero from '../assets/essenza-hero.jpeg'
+import EssenzaHero2 from '../assets/essenza-hero2.jpeg'
+import EssenzaHero3 from '../assets/essenza-hero3.jpeg'
 import ProductCard from '../components/ProductCard'
-import { useCart } from '../context/CartContext'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type Product = {
   id: string
   name: string
   slug: string
   price_in_cents: number
+  stock: number
   images?: { id: string; url: string; alt?: string }[]
+  variants?: any[]
 }
 
 export default function Home() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const [items, setItems] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const { addItem } = useCart()
 
   useEffect(() => {
     fetch(
@@ -27,35 +30,46 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [])
 
-  const scrollToCollection = () => {
-    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  const handleAddToCart = (product: Product) => {
-    addItem({
-      productId: product.id,
-      variantId: null,
-      name: product.name,
-      price_in_cents: product.price_in_cents,
-      image: product.images?.[0]?.url,
-      slug: product.slug,
-    })
-  }
+  const slides: Slide[] = [
+    {
+      imageSrc: EssenzaHero,
+      imageAlt: 'Velas Aromáticas',
+      title: 'VELAS AROMÁTICAS',
+      subtitle: 'Transforme qualquer ambiente',
+      ctaLabel: 'DESCUBRA',
+      ctaAction: () =>
+        sectionRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        }),
+      align: 'right',
+    },
+    {
+      imageSrc: EssenzaHero2,
+      imageAlt: 'Sabonetes artesanais',
+      title: 'SABONETES ARTESANAIS GLICERINADOS',
+      titleStack: true,
+      subtitle: 'Cada banho uma nova experiência',
+      ctaLabel: 'QUERO',
+      ctaAction: '/categoria/corpo',
+      align: 'left',
+      // ctaClassName omitido = verde padrão
+    },
+    {
+      imageSrc: EssenzaHero3,
+      imageAlt: 'Velas de massagem',
+      title: 'VELAS DE MASSAGEM',
+      subtitle: 'Permita-se esse prazer',
+      ctaLabel: 'CONFIRA',
+      ctaAction: '/categoria/velas?tipo=massagem',
+      align: 'left',
+      ctaClassName: 'bg-[#8b5c2a]',
+    },
+  ]
 
   return (
     <main>
-      <Hero
-        imageSrc={HeroNatal}
-        imageAlt="Coleção de Natal Essenza"
-        title="GOLD COLLECTION"
-        subtitle="Para um natal cheio de magia e encanto."
-        ctaLabel="CONHEÇA A COLEÇÃO"
-        onHeroClick={scrollToCollection}
-        aspectMobile="aspect-[16/9]"
-        aspectDesktop="aspect-[21/9]"
-        overlayClassName="bg-black/30"
-        centered
-      />
+      <HeroCarousel slides={slides} autoPlayInterval={5000} />
 
       <section ref={sectionRef} id="colecao-natal" className="px-6 py-10">
         <div className="mx-auto max-w-6xl">
@@ -67,11 +81,7 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onAddToCart={handleAddToCart}
-              />
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </div>

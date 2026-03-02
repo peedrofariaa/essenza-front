@@ -10,6 +10,7 @@ import {
 type CartItem = {
   productId: string
   variantId: string | null
+  variantLabel?: string | null
   name: string
   price_in_cents: number
   quantity: number

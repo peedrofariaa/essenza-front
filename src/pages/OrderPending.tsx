@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 export default function OrderPending() {
   return (
-    <div className="min-h-screen bg-[#f6f3f8] px-6 pt-28 pb-12">
+    <div className="min-h-screen bg-[#f6f3f8] px-6 pt-36 pb-12">
       <div className="mx-auto max-w-2xl rounded-lg bg-white p-8 text-center shadow">
         <div className="mb-4 text-6xl">⏳</div>
         <h1 className="mb-4 text-3xl font-bold text-yellow-600">

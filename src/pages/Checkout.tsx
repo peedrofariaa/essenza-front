@@ -39,6 +39,7 @@ export default function Checkout() {
     'pix' | 'credit_card' | 'boleto' | null
   >(null)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
     if (!user) {
@@ -61,6 +62,7 @@ export default function Checkout() {
     }
 
     setShippingForm({ ...shippingForm, [name]: newValue })
+    setErrors({ ...errors, [name]: '' })
   }
 
   const calculateShipping = async () => {
@@ -94,7 +96,30 @@ export default function Checkout() {
     }
   }
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!shippingForm.firstName) newErrors.firstName = 'Campo obrigatório'
+    if (!shippingForm.lastName) newErrors.lastName = 'Campo obrigatório'
+    if (!shippingForm.phone || shippingForm.phone.length < 10) {
+      newErrors.phone = 'Telefone inválido'
+    }
+    if (!shippingForm.cep) newErrors.cep = 'Campo obrigatório'
+    if (!shippingForm.address) newErrors.address = 'Campo obrigatório'
+    if (!shippingForm.number) newErrors.number = 'Campo obrigatório'
+    if (!shippingForm.neighborhood) newErrors.neighborhood = 'Campo obrigatório'
+    if (!shippingForm.city) newErrors.city = 'Campo obrigatório'
+    if (!shippingForm.state) newErrors.state = 'Campo obrigatório'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleFinishOrder = async () => {
+    if (!validateForm()) {
+      alert('Preencha todos os campos obrigatórios')
+      return
+    }
     if (!selectedShipping) {
       alert('Selecione um método de entrega')
       return
@@ -106,11 +131,11 @@ export default function Checkout() {
 
     setLoading(true)
     try {
-      // TODO: Criar endpoint /orders/create que cria pedido e retorna link de pagamento do Mercado Pago
       const { data } = await api.post('/orders/create', {
         items: items.map((item) => ({
           productId: item.productId,
           variantId: item.variantId,
+          variantLabel: item.variantLabel,
           name: item.name,
           quantity: item.quantity,
           price_in_cents: item.price_in_cents,
@@ -124,7 +149,6 @@ export default function Checkout() {
         shippingDays: selectedShipping.delivery_time,
       })
 
-      // Redirecionar para página de pagamento do Mercado Pago
       window.location.href = data.paymentUrl
       clearCart()
     } catch (error: any) {
@@ -146,9 +170,7 @@ export default function Checkout() {
         </h1>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Coluna Esquerda - Formulários */}
           <div className="space-y-6 lg:col-span-2">
-            {/* 1. Dados Pessoais */}
             <div className="rounded-lg bg-white p-6 shadow">
               <h2 className="mb-4 text-xl font-semibold text-gray-800">
                 1. Dados Pessoais
@@ -170,107 +192,273 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* 2. Dados de Entrega */}
             <div className="rounded-lg bg-white p-6 shadow">
               <h2 className="mb-4 text-xl font-semibold text-gray-800">
                 2. Dados de Entrega
               </h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="Nome*"
-                  value={shippingForm.firstName}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Sobrenome*"
-                  value={shippingForm.lastName}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="Telefone* (11999999999)"
-                  value={shippingForm.phone}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <div className="flex gap-2">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Nome
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
                   <input
                     type="text"
-                    name="cep"
-                    placeholder="CEP*"
-                    value={shippingForm.cep}
+                    name="firstName"
+                    value={shippingForm.firstName}
                     onChange={handleShippingChange}
-                    className="flex-1 rounded border px-3 py-2 outline-none focus:border-[#00843d]"
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
                   />
-                  <button
-                    type="button"
-                    onClick={calculateShipping}
-                    disabled={loadingShipping}
-                    className="disabled:opacity- cursor-pointer rounded bg-[#00843d] px-4 py-2 text-white hover:bg-[#006d32]"
-                  >
-                    {loadingShipping ? 'Calculando...' : 'Calcular'}
-                  </button>
+                  {errors.firstName && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.firstName}
+                    </p>
+                  )}
                 </div>
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Endereço*"
-                  value={shippingForm.address}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d] md:col-span-2"
-                />
-                <input
-                  type="text"
-                  name="number"
-                  placeholder="Número*"
-                  value={shippingForm.number}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="complement"
-                  placeholder="Complemento"
-                  value={shippingForm.complement}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="neighborhood"
-                  placeholder="Bairro*"
-                  value={shippingForm.neighborhood}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="Cidade*"
-                  value={shippingForm.city}
-                  onChange={handleShippingChange}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
-                <input
-                  type="text"
-                  name="state"
-                  placeholder="Estado* (SP)"
-                  value={shippingForm.state}
-                  onChange={handleShippingChange}
-                  maxLength={2}
-                  className="rounded border px-3 py-2 outline-none focus:border-[#00843d]"
-                />
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Sobrenome
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={shippingForm.lastName}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.lastName && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.lastName}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Telefone
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="(11) 99999-9999"
+                    value={shippingForm.phone}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    CEP
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="cep"
+                      value={shippingForm.cep}
+                      onChange={handleShippingChange}
+                      className="flex-1 rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                    />
+                    <button
+                      type="button"
+                      onClick={calculateShipping}
+                      disabled={loadingShipping}
+                      className="cursor-pointer rounded bg-[#00843d] px-4 py-2 text-white hover:bg-[#006d32] disabled:opacity-50"
+                    >
+                      {loadingShipping ? 'Calculando...' : 'Calcular'}
+                    </button>
+                  </div>
+                  {errors.cep && (
+                    <p className="mt-1 text-xs text-red-600">{errors.cep}</p>
+                  )}
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Endereço
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={shippingForm.address}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.address && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.address}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Número
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="number"
+                    value={shippingForm.number}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.number && (
+                    <p className="mt-1 text-xs text-red-600">{errors.number}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Complemento
+                  </label>
+                  <input
+                    type="text"
+                    name="complement"
+                    value={shippingForm.complement}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Bairro
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="neighborhood"
+                    value={shippingForm.neighborhood}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.neighborhood && (
+                    <p className="mt-1 text-xs text-red-600">
+                      {errors.neighborhood}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Cidade
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={shippingForm.city}
+                    onChange={handleShippingChange}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
+                  />
+                  {errors.city && (
+                    <p className="mt-1 text-xs text-red-600">{errors.city}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-700">
+                    Estado
+                    <span
+                      style={{
+                        color: 'rgb(224, 43, 39)',
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        marginLeft: 5,
+                      }}
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="state"
+                    placeholder="SP"
+                    value={shippingForm.state}
+                    onChange={handleShippingChange}
+                    maxLength={2}
+                    className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 uppercase outline-none focus:border-[#00843d]"
+                  />
+                  {errors.state && (
+                    <p className="mt-1 text-xs text-red-600">{errors.state}</p>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Método de Entrega */}
             {shippingOptions.length > 0 && (
               <div className="rounded-lg bg-white p-6 shadow">
                 <h3 className="mb-3 text-lg font-semibold text-gray-800">
@@ -310,7 +498,6 @@ export default function Checkout() {
               </div>
             )}
 
-            {/* 3. Forma de Pagamento */}
             {selectedShipping && (
               <div className="rounded-lg bg-white p-6 shadow">
                 <h2 className="mb-4 text-xl font-semibold text-gray-800">
@@ -349,7 +536,6 @@ export default function Checkout() {
             )}
           </div>
 
-          {/* Coluna Direita - Resumo do Pedido */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 rounded-lg bg-white p-6 shadow">
               <h2 className="mb-4 text-xl font-semibold text-gray-800">
@@ -370,6 +556,9 @@ export default function Checkout() {
                     )}
                     <div className="flex-1">
                       <p className="font-medium">{item.name}</p>
+                      <p className="font-medium text-[#00843d]">
+                        {item.variantLabel}
+                      </p>
                       <p className="text-gray-600">Qtd: {item.quantity}</p>
                       <p className="font-semibold">
                         {(

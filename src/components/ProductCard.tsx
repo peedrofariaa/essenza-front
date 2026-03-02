@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from 'react-router-dom'
-import { IoBagOutline } from 'react-icons/io5'
 
 type ProductImage = { id: string; url: string; alt?: string }
 
@@ -8,21 +8,19 @@ type Product = {
   name: string
   slug: string
   price_in_cents: number
+  stock: number
   images?: ProductImage[]
+  variants?: any[]
 }
 
 type Props = {
   product: Product
-  onAddToCart?: (p: Product) => void
 }
 
-export default function ProductCard({ product, onAddToCart }: Props) {
+export default function ProductCard({ product }: Props) {
   const image = product.images?.[0]
-
-  const handleAdd = (e: React.MouseEvent) => {
-    e.preventDefault()
-    onAddToCart?.(product)
-  }
+  const hasVariants = (product.variants?.length ?? 0) > 0
+  const isOutOfStock = product.stock <= 0 && !hasVariants
 
   return (
     <Link
@@ -52,16 +50,19 @@ export default function ProductCard({ product, onAddToCart }: Props) {
           })}
         </p>
 
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded border border-[#00843d] bg-white px-4 py-2 text-xs font-semibold tracking-wide text-[#00843d] uppercase hover:border-[#00843d] hover:bg-[#00843d] hover:text-white"
-        >
-          <span className="flex items-center justify-center gap-1 text-lg">
-            <IoBagOutline className="h-5 w-5" />
-            Adicionar
-          </span>
-        </button>
+        {isOutOfStock ? (
+          <div className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded border border-gray-300 bg-gray-200 px-4 py-2 text-xs font-semibold tracking-wide text-gray-500 uppercase">
+            <span className="flex items-center justify-center gap-1 text-lg">
+              Esgotado
+            </span>
+          </div>
+        ) : (
+          <div className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded border border-[#00843d] bg-white px-4 py-2 text-xs font-semibold tracking-wide text-[#00843d] uppercase transition hover:border-[#00843d] hover:bg-[#00843d] hover:text-white">
+            <span className="flex items-center justify-center gap-1 text-lg">
+              Ver produto
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   )
