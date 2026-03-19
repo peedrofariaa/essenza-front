@@ -40,6 +40,7 @@ export default function Product() {
   )
   const [quantity, setQuantity] = useState(1)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [manualImageSelect, setManualImageSelect] = useState(false)
   const { addItem } = useCart()
 
   useEffect(() => {
@@ -52,7 +53,13 @@ export default function Product() {
       })
       .then((data) => {
         setProduct(data)
-        if (data.variants?.[0]?.id) {
+        const firstImage = data.images?.[0]
+        const matchingVariant = data.variants?.find((v: Variant) =>
+          firstImage?.alt?.toLowerCase().includes(v.label?.toLowerCase()),
+        )
+        if (matchingVariant) {
+          setSelectedVariantId(matchingVariant.id)
+        } else if (data.variants?.[0]?.id) {
           setSelectedVariantId(data.variants[0].id)
         }
       })
@@ -98,6 +105,16 @@ export default function Product() {
   const availableStock = selectedVariant ? selectedVariant.stock : product.stock
   const isOutOfStock = availableStock <= 0
 
+  const activeImageIndex =
+    !manualImageSelect && selectedVariant?.label
+      ? product.images.findIndex((img) =>
+          img.alt?.toLowerCase().includes(selectedVariant.label.toLowerCase()),
+        )
+      : selectedImageIndex
+
+  const displayIndex =
+    activeImageIndex >= 0 ? activeImageIndex : selectedImageIndex
+
   return (
     <main className="px-6 pt-20 pb-12">
       <div className="mx-auto max-w-6xl pt-10">
@@ -108,9 +125,18 @@ export default function Product() {
                 {product.images.map((img, index) => (
                   <button
                     key={img.id}
-                    onClick={() => setSelectedImageIndex(index)}
+                    onClick={() => {
+                      setSelectedImageIndex(index)
+                      setManualImageSelect(true)
+                      const matchingVariant = product.variants.find((v) =>
+                        img.alt?.toLowerCase().includes(v.label?.toLowerCase()),
+                      )
+                      if (matchingVariant) {
+                        setSelectedVariantId(matchingVariant.id)
+                      }
+                    }}
                     className={`h-20 w-20 cursor-pointer overflow-hidden rounded-lg border-2 transition ${
-                      selectedImageIndex === index
+                      displayIndex === index
                         ? 'border-[#00843d]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
@@ -126,10 +152,10 @@ export default function Product() {
             )}
 
             <div className="flex flex-1 items-start justify-center">
-              {product.images[selectedImageIndex] ? (
+              {product.images[displayIndex] ? (
                 <img
-                  src={product.images[selectedImageIndex].url}
-                  alt={product.images[selectedImageIndex].alt ?? product.name}
+                  src={product.images[displayIndex].url}
+                  alt={product.images[displayIndex].alt ?? product.name}
                   className="h-auto max-h-[600px] w-auto max-w-full rounded-lg object-cover shadow-sm"
                 />
               ) : (
@@ -197,7 +223,7 @@ export default function Product() {
             {product.variants.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold tracking-wide text-gray-800 uppercase">
-                  Escolha o aroma
+                  Escolha o aroma/cor
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.variants.map((v) => {
@@ -206,7 +232,16 @@ export default function Product() {
                       <button
                         key={v.id}
                         type="button"
-                        onClick={() => setSelectedVariantId(v.id)}
+                        onClick={() => {
+                          setSelectedVariantId(v.id)
+                          setManualImageSelect(false)
+                          const imgIndex = product.images.findIndex((img) =>
+                            img.alt
+                              ?.toLowerCase()
+                              .includes(v.label?.toLowerCase()),
+                          )
+                          if (imgIndex >= 0) setSelectedImageIndex(imgIndex)
+                        }}
                         disabled={variantOutOfStock}
                         className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                           selectedVariantId === v.id

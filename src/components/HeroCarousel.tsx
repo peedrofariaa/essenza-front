@@ -7,13 +7,13 @@ export type Slide = {
   imageSrc?: string
   imageAlt?: string
   title: string
-  titleStack?: boolean // ← cada palavra do título em uma linha
+  titleStack?: boolean
   subtitle?: string
   ctaLabel?: string
   ctaAction?: (() => void) | string
   overlayClassName?: string
-  align?: 'left' | 'center' | 'right' // ← substitui o centered boolean
-  ctaClassName?: string // ← cor do botão por slide
+  align?: 'left' | 'center' | 'right'
+  ctaClassName?: string
 }
 
 type HeroCarouselProps = {
@@ -73,7 +73,6 @@ export default function HeroCarousel({
       <div
         className={`relative w-full overflow-hidden bg-gray-100 ${aspectMobile} sm:${aspectDesktop}`}
       >
-        {/* Slides com fade */}
         {slides.map((s, i) => (
           <div
             key={i}
@@ -99,13 +98,11 @@ export default function HeroCarousel({
           </div>
         ))}
 
-        {/* Conteúdo do slide atual */}
         <div className="absolute inset-0 z-20 px-6">
           <div
             className={`mx-auto flex h-full max-w-6xl items-center ${alignment}`}
           >
             <div className="max-w-2xl text-white">
-              {/* Título normal ou empilhado por palavra */}
               {slide.titleStack ? (
                 <h1 className="flex flex-col text-3xl leading-tight font-semibold md:text-4xl">
                   {slide.title.split(' ').map((word, i) => (
@@ -137,7 +134,6 @@ export default function HeroCarousel({
           </div>
         </div>
 
-        {/* Setas */}
         <button
           onClick={prev}
           className="absolute top-1/2 left-3 z-30 -translate-y-1/2 cursor-pointer rounded-full bg-black/30 p-2 text-white transition hover:bg-black/50"
@@ -153,7 +149,6 @@ export default function HeroCarousel({
           <FiChevronRight size={22} />
         </button>
 
-        {/* Dots */}
         <div className="absolute bottom-4 left-1/2 z-30 flex -translate-x-1/2 gap-2">
           {slides.map((_, i) => (
             <button

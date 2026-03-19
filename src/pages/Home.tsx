@@ -43,6 +43,7 @@ export default function Home() {
           block: 'start',
         }),
       align: 'right',
+      ctaClassName: 'bg-[#c9a227]',
     },
     {
       imageSrc: EssenzaHero2,
@@ -53,7 +54,6 @@ export default function Home() {
       ctaLabel: 'QUERO',
       ctaAction: '/categoria/corpo',
       align: 'left',
-      // ctaClassName omitido = verde padrão
     },
     {
       imageSrc: EssenzaHero3,
