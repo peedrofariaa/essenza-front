@@ -203,6 +203,16 @@ export default function Header() {
                       )}
                     </div>
                   ))}
+                  <div className="mt-1 border-t border-gray-100 pt-1">
+                    <Link
+                      to="/aromas"
+                      role="menuitem"
+                      className="block px-4 py-2 text-sm text-gray-700 transition hover:bg-[#00843d] hover:text-white"
+                      onClick={() => setOpenCatMenu(false)}
+                    >
+                      Aromas
+                    </Link>
+                  </div>
                 </nav>
               )}
             </div>

@@ -53,9 +53,9 @@ export default function CategoryPage() {
     const params = new URLSearchParams({
       category: categoryEnum,
       page: '1',
-      per_page: '12',
-      sort: 'createdAt',
-      order: 'desc',
+      per_page: '100',
+      sort: 'name',
+      order: 'asc',
     })
 
     if (tipo === 'massagem') {

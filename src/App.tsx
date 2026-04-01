@@ -14,6 +14,7 @@ import Checkout from './pages/Checkout'
 import OrderSuccess from './pages/OrderSuccess'
 import OrderPending from './pages/OrderPending'
 import OrderFailure from './pages/OrderFailure'
+import Aromas from './pages/Aromas'
 import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
 
@@ -37,6 +38,7 @@ function App() {
         <Route path="/pedido/pendente" element={<OrderPending />} />
         <Route path="/pedido/falha" element={<OrderFailure />} />
         <Route path="/sobre" element={<About />} />
+        <Route path="/aromas" element={<Aromas />} />
       </Routes>
       <Footer />
     </>

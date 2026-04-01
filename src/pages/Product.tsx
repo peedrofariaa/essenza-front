@@ -31,6 +31,14 @@ type Product = {
   variants: Variant[]
 }
 
+function altMatchesVariant(alt: string, label: string): boolean {
+  const altLower = alt.toLowerCase()
+  return label
+    .toLowerCase()
+    .split(' / ')
+    .some((part) => altLower.includes(part.trim()))
+}
+
 export default function Product() {
   const { slug } = useParams<{ slug: string }>()
   const [product, setProduct] = useState<Product | null>(null)
@@ -52,10 +60,16 @@ export default function Product() {
         return r.json()
       })
       .then((data) => {
-        setProduct(data)
+        const sortedData = {
+          ...data,
+          variants: [...(data.variants ?? [])].sort((a: Variant, b: Variant) =>
+            a.label.localeCompare(b.label, 'pt-BR'),
+          ),
+        }
+        setProduct(sortedData)
         const firstImage = data.images?.[0]
         const matchingVariant = data.variants?.find((v: Variant) =>
-          firstImage?.alt?.toLowerCase().includes(v.label?.toLowerCase()),
+          firstImage?.alt ? altMatchesVariant(firstImage.alt, v.label) : false,
         )
         if (matchingVariant) {
           setSelectedVariantId(matchingVariant.id)
@@ -108,7 +122,7 @@ export default function Product() {
   const activeImageIndex =
     !manualImageSelect && selectedVariant?.label
       ? product.images.findIndex((img) =>
-          img.alt?.toLowerCase().includes(selectedVariant.label.toLowerCase()),
+          img.alt ? altMatchesVariant(img.alt, selectedVariant.label) : false,
         )
       : selectedImageIndex
 
@@ -129,7 +143,7 @@ export default function Product() {
                       setSelectedImageIndex(index)
                       setManualImageSelect(true)
                       const matchingVariant = product.variants.find((v) =>
-                        img.alt?.toLowerCase().includes(v.label?.toLowerCase()),
+                        img.alt ? altMatchesVariant(img.alt, v.label) : false,
                       )
                       if (matchingVariant) {
                         setSelectedVariantId(matchingVariant.id)
@@ -237,8 +251,8 @@ export default function Product() {
                           setManualImageSelect(false)
                           const imgIndex = product.images.findIndex((img) =>
                             img.alt
-                              ?.toLowerCase()
-                              .includes(v.label?.toLowerCase()),
+                              ? altMatchesVariant(img.alt, v.label)
+                              : false,
                           )
                           if (imgIndex >= 0) setSelectedImageIndex(imgIndex)
                         }}
@@ -256,6 +270,12 @@ export default function Product() {
                     )
                   })}
                 </div>
+                <a
+                  href="/aromas"
+                  className="text-xs text-[#00843d] underline underline-offset-2 hover:opacity-80"
+                >
+                  Conheça mais sobre os aromas →
+                </a>
               </div>
             )}
 

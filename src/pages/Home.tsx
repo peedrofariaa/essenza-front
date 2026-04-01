@@ -23,7 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL}/products?page=1&per_page=8&sort=createdAt&order=desc`,
+      `${import.meta.env.VITE_API_URL}/products?page=1&per_page=8&sort=price_in_cents&order=desc`,
     )
       .then((r) => r.json())
       .then((json) => setItems(json.data ?? []))
@@ -37,11 +37,7 @@ export default function Home() {
       title: 'VELAS AROMÁTICAS',
       subtitle: 'Transforme qualquer ambiente',
       ctaLabel: 'DESCUBRA',
-      ctaAction: () =>
-        sectionRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        }),
+      ctaAction: '/categoria/velas?tipo=aromaticas',
       align: 'right',
       ctaClassName: 'bg-[#c9a227]',
     },
