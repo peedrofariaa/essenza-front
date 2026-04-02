@@ -17,6 +17,8 @@ import OrderFailure from './pages/OrderFailure'
 import Aromas from './pages/Aromas'
 import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfUse from './pages/TermsOfUse'
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
         <Route path="/pedido/falha" element={<OrderFailure />} />
         <Route path="/sobre" element={<About />} />
         <Route path="/aromas" element={<Aromas />} />
+        <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
+        <Route path="/termos-de-uso" element={<TermsOfUse />} />
       </Routes>
       <Footer />
     </>

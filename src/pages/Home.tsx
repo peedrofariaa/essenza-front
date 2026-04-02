@@ -54,7 +54,7 @@ export default function Home() {
     {
       imageSrc: EssenzaHero3,
       imageAlt: 'Velas de massagem',
-      title: 'VELAS DE MASSAGEM',
+      title: 'VELA DE MASSAGEM',
       subtitle: 'Permita-se esse prazer',
       ctaLabel: 'CONFIRA',
       ctaAction: '/categoria/velas?tipo=massagem',

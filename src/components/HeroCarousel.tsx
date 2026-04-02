@@ -66,7 +66,7 @@ export default function HeroCarousel({
 
   return (
     <section
-      className="relative select-none"
+      className="relative pt-[112px] select-none sm:pt-0"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -104,13 +104,13 @@ export default function HeroCarousel({
           >
             <div className="max-w-2xl text-white">
               {slide.titleStack ? (
-                <h1 className="flex flex-col text-3xl leading-tight font-semibold md:text-4xl">
+                <h1 className="flex flex-col text-3xl leading-tight font-light md:text-4xl">
                   {slide.title.split(' ').map((word, i) => (
                     <span key={i}>{word}</span>
                   ))}
                 </h1>
               ) : (
-                <h1 className="text-3xl font-semibold md:text-4xl">
+                <h1 className="text-3xl font-light md:text-4xl">
                   {slide.title}
                 </h1>
               )}

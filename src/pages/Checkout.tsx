@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import api from '../utils/api'
+import { Link } from 'react-router-dom'
 
 type ShippingOption = {
   id: number
@@ -14,6 +15,7 @@ type ShippingOption = {
 }
 
 export default function Checkout() {
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const { user } = useAuth()
   const { items, totalPrice, clearCart } = useCart()
   const navigate = useNavigate()
@@ -73,17 +75,18 @@ export default function Checkout() {
 
     setLoadingShipping(true)
     try {
-      const itemsData = items.map(() => ({
-        quantity: 1,
-        weight: 0.3,
-        height: 10,
-        width: 8,
-        length: 8,
-      }))
-
+      const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
       const { data } = await api.post('/shipping/calculate', {
         cep_destino: shippingForm.cep,
-        items: itemsData,
+        items: [
+          {
+            quantity: totalItems,
+            weight: 0.3 * totalItems,
+            height: 10,
+            width: 15,
+            length: 15,
+          },
+        ],
       })
 
       setShippingOptions(data.options)
@@ -126,6 +129,10 @@ export default function Checkout() {
     }
     if (!paymentMethod) {
       alert('Selecione uma forma de pagamento')
+      return
+    }
+    if (!acceptedTerms) {
+      alert('Você precisa aceitar os Termos de Uso e a Política de Privacidade')
       return
     }
 
@@ -604,11 +611,44 @@ export default function Checkout() {
                   </span>
                 </div>
               </div>
+
+              <label className="mt-4 flex cursor-pointer items-start gap-2 text-xs text-gray-600">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 accent-[#00843d]"
+                />
+                <span>
+                  Li e concordo com os{' '}
+                  <Link
+                    to="/termos-de-uso"
+                    className="underline hover:text-[#00843d]"
+                    target="_blank"
+                  >
+                    Termos de Uso
+                  </Link>{' '}
+                  e a{' '}
+                  <Link
+                    to="/politica-de-privacidade"
+                    className="underline hover:text-[#00843d]"
+                    target="_blank"
+                  >
+                    Política de Privacidade
+                  </Link>
+                </span>
+              </label>
+
               <button
                 type="button"
                 onClick={handleFinishOrder}
-                disabled={loading || !selectedShipping || !paymentMethod}
-                className="mt-6 w-full cursor-pointer rounded bg-[#00843d] py-3 font-semibold text-white hover:bg-[#006d32] disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={
+                  loading ||
+                  !selectedShipping ||
+                  !paymentMethod ||
+                  !acceptedTerms
+                }
+                className="mt-4 w-full cursor-pointer rounded bg-[#00843d] py-3 font-semibold text-white hover:bg-[#006d32] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? 'Processando...' : 'Concluir Compra'}
               </button>
