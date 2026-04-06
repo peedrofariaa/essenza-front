@@ -99,6 +99,31 @@ export default function Checkout() {
     }
   }
 
+  const fetchAddressByCep = async (cep: string) => {
+    if (cep.length !== 8) return
+
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      const data = await res.json()
+
+      if (data.erro) return
+
+      setShippingForm((prev) => ({
+        ...prev,
+        address: data.logradouro || prev.address,
+        neighborhood: data.bairro || prev.neighborhood,
+        city: data.localidade || prev.city,
+        state: data.uf || prev.state,
+      }))
+
+      setTimeout(() => {
+        document.getElementById('number')?.focus()
+      }, 100)
+    } catch {
+      // Silencia o erro — o usuário ainda pode preencher manualmente
+    }
+  }
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
@@ -304,6 +329,7 @@ export default function Checkout() {
                       name="cep"
                       value={shippingForm.cep}
                       onChange={handleShippingChange}
+                      onBlur={(e) => fetchAddressByCep(e.target.value)}
                       className="flex-1 rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
                     />
                     <button
@@ -364,6 +390,7 @@ export default function Checkout() {
                   <input
                     type="text"
                     name="number"
+                    id="number"
                     value={shippingForm.number}
                     onChange={handleShippingChange}
                     className="w-full rounded-[5px] border border-gray-200 bg-gray-50 px-3 py-2 outline-none focus:border-[#00843d]"
