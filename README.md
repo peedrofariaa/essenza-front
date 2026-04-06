@@ -44,5 +44,5 @@ E-commerce de produtos artesanais em produção, construído do zero com React, 
 
 ## Repositórios relacionados
 
-- **Backend:** [essenza-back](https://github.com/seu-usuario/essenza-back)
-- **Admin:** [essenza-admin](https://github.com/seu-usuario/essenza-admin)
+- **Backend:** [essenza-back](https://github.com/peedrofariaa/essenza-back)
+- **Admin:** [essenza-admin](https://github.com/peedrofariaa/essenza-admin)
