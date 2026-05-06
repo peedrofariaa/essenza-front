@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import api from '../utils/api'
+import { useSEO } from '../utils/useSEO'
 
 export default function ForgotPassword() {
   const [form, setForm] = useState({ email: '' })
@@ -47,6 +48,8 @@ export default function ForgotPassword() {
       }
     })()
   }
+
+  useSEO({ title: 'Esqueci minha Senha — Essenza', noindex: true })
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12 pt-32">

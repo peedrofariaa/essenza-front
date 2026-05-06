@@ -1,6 +1,12 @@
 import { aromas } from '../utils/aromasData'
+import { useSEO } from '../utils/useSEO'
 
 export default function AromasPage() {
+  useSEO({
+    title: 'Nossos Aromas — Essenza',
+    description:
+      'Conheça cada aroma da Essenza: suas propriedades, notas olfativas e os produtos artesanais em que estão presentes.',
+  })
   return (
     <main className="mx-auto max-w-4xl px-4 py-12 pt-32">
       <h1 className="mb-2 text-3xl font-semibold">Nossos Aromas</h1>

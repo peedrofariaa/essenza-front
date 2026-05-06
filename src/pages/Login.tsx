@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import PasswordField from '../components/PasswordField'
+import { useSEO } from '../utils/useSEO'
 
 export default function Login() {
   const { login } = useAuth()
@@ -49,6 +50,8 @@ export default function Login() {
       setLoading(false)
     }
   }
+
+  useSEO({ title: 'Login — Essenza', noindex: true })
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12 pt-36">

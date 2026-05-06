@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useSEO } from '../utils/useSEO'
 
 function formatDateBR(iso: string) {
   try {
@@ -55,6 +56,8 @@ export default function MyAccount() {
       'Dados atualizados (simulação). Em breve, integrar com endpoint de update.',
     )
   }
+
+  useSEO({ title: 'Minha Conta — Essenza', noindex: true })
 
   if (!user) {
     return (

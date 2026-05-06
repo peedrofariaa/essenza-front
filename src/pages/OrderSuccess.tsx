@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import api from '../utils/api'
+import { useSEO } from '../utils/useSEO'
 
 export default function OrderSuccess() {
   const [searchParams] = useSearchParams()
@@ -18,6 +19,8 @@ export default function OrderSuccess() {
         .finally(() => setLoading(false))
     }
   }, [orderId])
+
+  useSEO({ title: 'Pedido Confirmado — Essenza', noindex: true })
 
   if (loading) {
     return (

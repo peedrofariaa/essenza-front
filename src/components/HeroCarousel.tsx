@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
@@ -58,7 +57,14 @@ export default function HeroCarousel({
 
   const handleCta = (action?: (() => void) | string) => {
     if (!action) return
-    typeof action === 'string' ? navigate(action) : action()
+    if (typeof action === 'function') {
+      action()
+    } else if (action.startsWith('#')) {
+      const el = document.querySelector(action)
+      el?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate(action)
+    }
   }
 
   const slide = slides[current]

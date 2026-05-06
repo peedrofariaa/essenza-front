@@ -8,6 +8,7 @@ import {
   validateEmail,
 } from '../utils/validations'
 import PasswordField from '../components/PasswordField'
+import { useSEO } from '../utils/useSEO'
 
 type Strength = 'weak' | 'medium' | 'strong' | ''
 
@@ -152,6 +153,8 @@ export default function CreateUser() {
       setLoading(false)
     }
   }
+
+  useSEO({ title: 'Criar Conta — Essenza', noindex: true })
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12 pt-32">

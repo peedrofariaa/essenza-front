@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /checkout
+Disallow: /me
+Disallow: /pedido/
+Disallow: /reset-password
+Disallow: /forgot-password
+Disallow: /create-user
+
+Sitemap: https://essenzame.com.br/sitemap.xml
