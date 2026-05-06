@@ -1,5 +1,12 @@
 /* eslint-disable no-irregular-whitespace */
+import { useSEO } from '../utils/useSEO'
+
 export default function PrivacyPolicy() {
+  useSEO({
+    title: 'Política de Privacidade — Essenza',
+    description:
+      'Leia nossa política de privacidade e saiba como tratamos seus dados.',
+  })
   return (
     <main className="mx-auto max-w-3xl px-6 py-16 pt-36">
       <div

@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useSEO } from '../utils/useSEO'
 
 export default function OrderFailure() {
+  useSEO({ title: 'Erro no Pedido — Essenza', noindex: true })
+
   return (
     <div className="min-h-screen bg-[#f6f3f8] px-6 pt-36 pb-12">
       <div className="mx-auto max-w-2xl rounded-lg bg-white p-8 text-center shadow">

@@ -1,4 +1,11 @@
-export default function Sobre() {
+import { useSEO } from '../utils/useSEO'
+
+export default function About() {
+  useSEO({
+    title: 'Sobre a Essenza — Nossa História',
+    description:
+      'Conheça a história da Essenza, marca de produtos artesanais feitas com alma para trazer bem-estar ao seu lar.',
+  })
   return (
     <main className="px-6 pt-32 pb-16">
       <div className="mx-auto max-w-2xl">

@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import api from '../utils/api'
 import PasswordField from '../components/PasswordField'
+import { useSEO } from '../utils/useSEO'
 
 type Strength = 'weak' | 'medium' | 'strong' | ''
 
@@ -59,6 +60,8 @@ export default function ResetPassword() {
       setLoading(false)
     }
   }
+
+  useSEO({ title: 'Redefinir Senha — Essenza', noindex: true })
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-[#f6f3f8] py-12">

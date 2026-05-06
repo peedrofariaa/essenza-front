@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import api from '../utils/api'
 import { Link } from 'react-router-dom'
+import { useSEO } from '../utils/useSEO'
 
 type ShippingOption = {
   id: number
@@ -189,6 +190,8 @@ export default function Checkout() {
       setLoading(false)
     }
   }
+
+  useSEO({ title: 'Checkout — Essenza', noindex: true })
 
   if (!user || items.length === 0) return null
 

@@ -8,6 +8,7 @@ import {
   shouldShowCandleCare,
   shouldShowMassageCandleInfo,
 } from '../utils/productInfo'
+import { useSEO } from '../utils/useSEO'
 
 type ProductImage = { id: string; url: string; alt?: string }
 type Variant = {
@@ -102,6 +103,16 @@ export default function Product() {
     )
     setQuantity(1)
   }
+
+  useSEO({
+    title: product ? `${product.name} — Essenza` : 'Produto — Essenza',
+    description: product
+      ? product.description.slice(0, 155)
+      : 'Confira nossos produtos artesanais.',
+    canonical: product
+      ? `https://essenzame.com.br/produto/${product.slug}`
+      : undefined,
+  })
 
   if (loading) {
     return <p className="p-6 text-center text-gray-600">Carregando...</p>

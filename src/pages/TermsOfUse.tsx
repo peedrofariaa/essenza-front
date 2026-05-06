@@ -1,5 +1,12 @@
 /* eslint-disable no-irregular-whitespace */
+import { useSEO } from '../utils/useSEO'
+
 export default function TermsOfUse() {
+  useSEO({
+    title: 'Termos de Uso — Essenza',
+    description:
+      'Leia os termos de uso do site Essenza e saiba seus direitos e responsabilidades ao utilizar nossa plataforma.',
+  })
   return (
     <main className="mx-auto max-w-3xl px-6 py-16 pt-36">
       <div

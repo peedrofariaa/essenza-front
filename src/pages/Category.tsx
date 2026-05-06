@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
+import { useSEO } from '../utils/useSEO'
 
 type Product = {
   id: string
@@ -18,6 +19,7 @@ const CATEGORY_MAP: Record<string, string> = {
   corpo: 'CORPO_BANHO',
   decoracao: 'DECORACAO',
   aromatizadores: 'AROMATIZADORES',
+  kits: 'KITS',
 }
 
 const CATEGORY_TITLES: Record<string, string> = {
@@ -25,6 +27,7 @@ const CATEGORY_TITLES: Record<string, string> = {
   corpo: 'Corpo & Banho',
   decoracao: 'Decoração',
   aromatizadores: 'Aromatizadores',
+  kits: 'Dia das Mães',
 }
 
 const TIPO_TITLES: Record<string, string> = {
@@ -45,6 +48,11 @@ export default function CategoryPage() {
   const title = tipo
     ? (TIPO_TITLES[tipo] ?? CATEGORY_TITLES[slug ?? ''] ?? 'Coleção')
     : (CATEGORY_TITLES[slug ?? ''] ?? 'Coleção')
+
+  useSEO({
+    title: `${title} — Essenza`,
+    description: `Confira nossa linha de ${title.toLowerCase()} artesanais da Essenza. Qualidade e cuidado em cada produto.`,
+  })
 
   useEffect(() => {
     if (!categoryEnum) return
