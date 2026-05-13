@@ -27,7 +27,7 @@ const CATEGORY_TITLES: Record<string, string> = {
   corpo: 'Corpo & Banho',
   decoracao: 'Decoração',
   aromatizadores: 'Aromatizadores',
-  kits: 'Dia das Mães',
+  kits: 'Kits & Presentes',
 }
 
 const TIPO_TITLES: Record<string, string> = {
