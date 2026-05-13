@@ -31,8 +31,6 @@ const alignMap = {
 export default function HeroCarousel({
   slides,
   autoPlayInterval = 5000,
-  aspectMobile = 'aspect-[16/9]',
-  aspectDesktop = 'aspect-[21/9]',
 }: HeroCarouselProps) {
   const [current, setCurrent] = useState(0)
   const [paused, setPaused] = useState(false)
@@ -76,9 +74,7 @@ export default function HeroCarousel({
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div
-        className={`relative w-full overflow-hidden bg-gray-100 ${aspectMobile} sm:${aspectDesktop}`}
-      >
+      <div className="relative h-[190vw] w-full overflow-hidden bg-gray-100 sm:aspect-[18/9] sm:h-auto">
         {slides.map((s, i) => (
           <div
             key={i}

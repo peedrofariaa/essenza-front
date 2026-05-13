@@ -19,7 +19,7 @@ const CATEGORIES = [
   { label: 'Corpo & Banho', slug: 'corpo' },
   { label: 'Decoração', slug: 'decoracao' },
   { label: 'Aromatizadores', slug: 'aromatizadores' },
-  { label: 'Dia das Mães', slug: 'kits' },
+  { label: 'Kits & Presentes', slug: 'kits' },
 ]
 
 type SearchProduct = {
